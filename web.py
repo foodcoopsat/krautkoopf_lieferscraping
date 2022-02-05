@@ -693,4 +693,4 @@ def get_favicon():
     return server_static('favicon.ico')
 
 if __name__ == "__main__":
-    bottle.run(session, host='0.0.0.0', port=8080, debug=True, reloader=True)
+    bottle.run(session, host='0.0.0.0', port=8080)
