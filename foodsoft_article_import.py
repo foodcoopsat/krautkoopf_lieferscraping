@@ -113,7 +113,9 @@ def compare_manual_changes(foodcoop, supplier, supplier_id, articles, foodsoft_c
 
     # Get the last CSV created by the script
     last_imported_run_name = base.read_in_config(configuration_config, "last imported run", "")
-    last_imported_csv = base.get_file_path(foodcoop=foodcoop, configuration=supplier, run=last_imported_run_name, folder="download", ending=".csv")
+    last_imported_csv = None
+    if last_imported_run_name:
+        last_imported_csv, notifications = base.get_file_path(foodcoop=foodcoop, configuration=supplier, run=last_imported_run_name, folder="download", ending=".csv", notifications=notifications)
     if not last_imported_csv:
         notifications.append("No previous CSV found for comparison.")
         articles_from_last_run = []

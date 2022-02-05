@@ -8,8 +8,11 @@ div {
   font-family: Calibri, Verdana, sans-serif;
   margin: auto;
 }
+body {
+  width: 95%;
+}
 @media only screen and (min-width: 768px) {
-  div {width: 768px; margin: auto;}
+  body {width: 730px; margin: auto}
 }
 details > summary {
   padding: 4px;

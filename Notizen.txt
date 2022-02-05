@@ -3,6 +3,7 @@
 
 aktuell:
 - Webinterface
+	- Session Management?? Wenn ich mich am PC einlogge, bin ich auch am Handy drin - wieso?
 	- Instanz-Einstellungen-bearbeiten-Seite, Instanz-löschen-Option
 	- Config-Kategorien (ausklappbar? auf Startseite der Foodcoop)
 	- Besser mit hochgeladenen Dateien umgehen

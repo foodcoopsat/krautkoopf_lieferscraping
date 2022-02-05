@@ -10,8 +10,9 @@ import babel.dates
 import base
 import foodsoft
 
-class Session:
+class Session(bottle.Bottle):
     def __init__(self):
+        super().__init__()
         self.instance = None
         self.foodsoft_connector = None
         self.settings = None
@@ -114,7 +115,7 @@ def submitted_form_content(submitted_form, request_path=None):
     return submitted_form_content
 
 def login_link(instance):
-    return bottle.template("<a href='/{{instance}}'>{{instance}}</a>", instance=instance)
+    return bottle.template("<p><a href='/{{instance}}'>{{instance}}</a></p>", instance=instance)
 
 def configuration_link(configuration):
     return bottle.template("<a href='/{{foodcoop}}/{{configuration}}'>{{configuration}}</a>", foodcoop=session.instance, configuration=configuration)
@@ -397,8 +398,6 @@ def del_configuration(submitted_form):
 def root_page():
     instances_content = ""
     for instance in base.find_instances():
-        if instances_content:
-            instances_content += "<br/>"
         instances_content += login_link(instance)
     return bottle.template('templates/root.tpl', messages=read_messages(), instances_content=instances_content)
 
@@ -550,7 +549,7 @@ def delete_configuration_page(configuration):
 def new_configuration_page():
     return bottle.template('templates/new_configuration.tpl', messages=read_messages(), fc=session.instance, foodcoop=session.instance.capitalize(), script_options=script_options())
 
-@bottle.route('/', method='ANY')
+@session.route('/', method='ANY')
 def root():
     submitted_form = bottle.request.forms
     if 'new instance' in submitted_form:
@@ -560,14 +559,14 @@ def root():
     else:
         return root_page()
 
-@bottle.route('/<fc>')
+@session.route('/<fc>')
 def login(fc):
     if check_login(bottle.request.forms, fc):
         return main_page()
     else:
         return login_page(fc)
 
-@bottle.route('/<fc>', method='POST')
+@session.route('/<fc>', method='POST')
 def do_main(fc):
     submitted_form = bottle.request.forms
     if 'logout' in submitted_form:
@@ -591,7 +590,7 @@ def do_main(fc):
     else:
         return login_page(fc)
 
-@bottle.route('/<fc>/<configuration>', method='ANY')
+@session.route('/<fc>/<configuration>', method='ANY')
 def configuration(fc, configuration):
     global session
     submitted_form = bottle.request.forms
@@ -603,7 +602,7 @@ def configuration(fc, configuration):
     else:
         return login_page(fc, bottle.request.path, submitted_form)
 
-@bottle.route('/<fc>/<configuration>/display/<run_name>', method='ANY')
+@session.route('/<fc>/<configuration>/display/<run_name>', method='ANY')
 def display_run(fc, configuration, run_name):
     global session
     submitted_form = bottle.request.forms
@@ -643,7 +642,7 @@ def display_run(fc, configuration, run_name):
     else:
         return login_page(fc, bottle.request.path, submitted_form)
 
-@bottle.route('/<fc>/<configuration>/new_run', method='ANY')
+@session.route('/<fc>/<configuration>/new_run', method='ANY')
 def start_script_run(fc, configuration):
     submitted_form = bottle.request.forms
     if check_login(submitted_form, fc):
@@ -655,7 +654,7 @@ def start_script_run(fc, configuration):
     else:
         return login_page(fc, bottle.request.path, submitted_form)
 
-@bottle.route('/<fc>/<configuration>/edit', method='ANY')
+@session.route('/<fc>/<configuration>/edit', method='ANY')
 def edit_configuration(fc, configuration):
     submitted_form = bottle.request.forms
     if check_login(submitted_form, fc):
@@ -663,7 +662,7 @@ def edit_configuration(fc, configuration):
     else:
         return login_page(fc, bottle.request.path)
 
-@bottle.route('/<fc>/<configuration>/delete', method='ANY')
+@session.route('/<fc>/<configuration>/delete', method='ANY')
 def delete_configuration(fc, configuration):
     submitted_form = bottle.request.forms
     if check_login(submitted_form, fc):
@@ -671,7 +670,7 @@ def delete_configuration(fc, configuration):
     else:
         return login_page(fc, bottle.request.path, submitted_form)
 
-@bottle.route('/download/<filename:path>', method='ANY')
+@session.route('/download/<filename:path>', method='ANY')
 def download(filename):
     submitted_form = bottle.request.forms
     dir_array = os.path.normpath(filename).split(os.path.sep)
@@ -681,9 +680,17 @@ def download(filename):
     else:
         return login_page(fc=fc, request_path=submitted_form.get("origin"))
 
-@bottle.route("/templates/styles.css")
+@session.route("/templates/styles.css")
 def send_css(filename='styles.css'):
     return bottle.static_file(filename, root="templates")
 
+@session.get('/media/:path#.+#')
+def server_static(path):
+    return bottle.static_file(path, root="media")
+
+@session.get('/favicon.ico')
+def get_favicon():
+    return server_static('favicon.ico')
+
 if __name__ == "__main__":
-    bottle.run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+    bottle.run(session, host='0.0.0.0', port=8080, debug=True, reloader=True)

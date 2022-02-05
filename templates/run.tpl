@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>{{foodcoop}} Lieferscraping - {{configuration}} - {{run.name}}</title>
-        <link rel="stylesheet" href="/templates/styles.css" type="text/css">
+        % include("templates/header.tpl")
     </head>
 
     <body>

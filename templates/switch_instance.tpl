@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>{{current_instance}} Lieferscraping - Instanz wechseln?</title>
-        <link rel="stylesheet" href="/templates/styles.css" type="text/css">
+        % include("templates/header.tpl")
     </head>
 
     <body>

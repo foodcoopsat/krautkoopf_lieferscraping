@@ -133,3 +133,4 @@ dmypy.json
 data/
 config/
 Archiv/
+test.py

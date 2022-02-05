@@ -160,7 +160,7 @@ def save_config(foodcoop, configuration, config):
 
 def set_config_detail(foodcoop, configuration, detail, value):
     config = read_config(foodcoop, configuration)
-    config[configuration][detail] = value
+    config[detail] = value
     save_config(foodcoop, configuration, config)
 
 def rename_configuration(foodcoop, old_configuration_name, new_configuration_name):
@@ -261,13 +261,18 @@ def get_outputs(foodcoop, configuration):
     else:
         return []
 
-def get_file_path(foodcoop, configuration, run, folder, ending=""):
+def get_file_path(foodcoop, configuration, run, folder, ending="", notifications=None):
+    file_path = None
+    if not notifications:
+        notifications = []
     path = os.path.join(output_path(foodcoop, configuration), run, folder)
-    files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith(ending)]
-    if len(files) > 1:
-        print("Warning: Multiple files found for " + run)
-    if files:
-        return files[0]
+    if os.path.isdir(path):
+        files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith(ending)]
+        if len(files) > 1:
+            notifications.append("Warning: Multiple files found for " + run)
+        if files:
+            file_path = files[0]
+    return file_path, notifications
 
 def list_categories(categories):
     txt = ""
