@@ -9,6 +9,7 @@
         <div>
             {{messages}}
             <h1>{{foodcoop}} Lieferscraping - Login</h1>
+            <p>{{description}}</p>
             <p>Bitte gib deine Zugangsdaten für folgende Foodsoft-Instanz ein:
             <br/><a href="{{foodsoft_login_address}}" target="_blank">{{foodsoft_address}}</a></p>
             <form action="{{request_path}}" method="post">

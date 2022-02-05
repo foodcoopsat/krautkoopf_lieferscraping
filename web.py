@@ -439,12 +439,13 @@ def login_page(fc, request_path=None, submitted_form=None):
         return switch_instance_page(fc, request_path, submitted_form)
     else:
         session.switch_to_instance(fc)
-        foodsoft_address = base.read_settings(fc)["foodsoft_url"]
+        foodsoft_address = session.settings["foodsoft_url"]
         foodsoft_login_address = foodsoft_address
         if not foodsoft_login_address.endswith("/"):
             foodsoft_login_address += "/"
         foodsoft_login_address += "login"
-        return bottle.template('templates/login.tpl', messages=read_messages(), request_path=request_path, submitted_form_content=submitted_form_content(submitted_form), foodcoop=session.instance.capitalize(), foodsoft_address=foodsoft_address, foodsoft_login_address=foodsoft_login_address)
+        description = session.settings.get("description", "")
+        return bottle.template('templates/login.tpl', messages=read_messages(), request_path=request_path, submitted_form_content=submitted_form_content(submitted_form), foodcoop=session.instance.capitalize(), foodsoft_address=foodsoft_address, foodsoft_login_address=foodsoft_login_address, description=description)
 
 def switch_instance_page(requested_instance, request_path=None, submitted_form=None):
     return bottle.template('templates/switch_instance.tpl', requested_instance=requested_instance, current_instance=session.instance, submitted_form_content=submitted_form_content(submitted_form, request_path))
